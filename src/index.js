@@ -25,7 +25,8 @@ async function connectToDatabase() {
 connectToDatabase();
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5173', credentials: true })); // Allow requests from your frontend origin
+app.use(cors({ origin: ['http://localhost:5173', 'https://jokes-generator-front-ked6zx7w2-rimas-projects-d9979a5d.vercel.app'
+], credentials: true }, )); // Allow requests from your frontend origin
 app.use(express.json());
 
 // Fetch jokes route
