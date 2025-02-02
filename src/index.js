@@ -74,6 +74,30 @@ app.post("/jokes/:id/react", async (req, res) => {
   }
 });
 
+app.post("/jokes", async (req, res) => {
+  const text = req.body.text;
+
+    try {
+        await client.connect();
+        const db = client.db("jokes"); // Replace with your database name
+        const jokesCollection = db.collection("jokes");
+
+        const jokes = [
+            {
+                text: text,
+                likes: 0,
+                dislikes: 0,
+            }
+        ];
+
+        const result = await jokesCollection.insertMany(jokes);
+
+        res.status(200).json({message: "Your joke is added successfully"})
+    } catch (error) {
+        console.error("Error inserting jokes:", error);
+    } 
+})
+
 // Start the server
 app.listen(port, () => {
   console.log("Listening on port: " + port);
