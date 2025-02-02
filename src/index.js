@@ -25,8 +25,27 @@ async function connectToDatabase() {
 connectToDatabase();
 
 // Middleware
-app.use(cors({ origin: ['http://localhost:5173', 'https://jokes-generator-front-ked6zx7w2-rimas-projects-d9979a5d.vercel.app'
-], credentials: true }, )); // Allow requests from your frontend origin
+const allowedOrigins = ['http://localhost:5173']; // Add your local development origin
+
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            if (!origin || allowedOrigins.includes(origin)) { // Allow requests with no origin (like Postman)
+                callback(null, true);
+                return;
+            }
+
+            const previewUrlRegex = /^https:\/\/jokes-generator-front-nol52n6ru-rimas-projects-([a-zA-Z0-9-_]+)\.vercel\.app$/;
+            const match = origin.match(previewUrlRegex);
+
+            if (match) {
+                callback(null, true); // Allow if it's a preview URL
+            } else {
+                callback(new Error('Not allowed by CORS')); // Deny for other origins
+            }
+        },
+    })
+);
 app.use(express.json());
 
 // Fetch jokes route
